@@ -167,7 +167,11 @@ class SurveyController extends Controller
 
     public function pilihResponden()
     {
-        $responden = Responden::orderBy('id', 'desc')->get();
+        $startDate = now()->subMonths(3);
+        $endDate = now();
+
+        $responden = Responden::whereBetween('created_at', [$startDate, $endDate])
+            ->orderBy('id', 'desc')->get();
         $namaSurvey = NamaSurvey::orderBy('id', 'desc')->where('is_aktif', 1)
             ->whereHas('kategoriSoal', function ($query) {
                 $query->whereHas('soal');
