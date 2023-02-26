@@ -26,13 +26,12 @@
                             <div class="row justify-content-center align-items-end">
                                 <div class="col-lg-10 col-md-9">
                                     {{-- Pilih Responden --}}
-                                    @component('components.formGroup.select',
-                                        [
-                                            'label' => 'Pilih Responden',
-                                            'name' => 'kode_unik_responden',
-                                            'id' => 'kode_unik_responden',
-                                            'class' => 'select2',
-                                        ])
+                                    @component('components.formGroup.select', [
+                                        'label' => 'Pilih Responden',
+                                        'name' => 'kode_unik_responden',
+                                        'id' => 'kode_unik_responden',
+                                        'class' => 'select2',
+                                    ])
                                         @slot('options')
                                             @foreach ($responden as $row)
                                                 <option value="{{ $row->kode_unik }}">{{ $row->kartu_keluarga }} -
@@ -59,13 +58,12 @@
                                     </div>
                                 </div>
                                 <div class="col-lg-12">
-                                    @component('components.formGroup.select',
-                                        [
-                                            'label' => 'Pilih Nama Survey',
-                                            'name' => 'nama_survey_id',
-                                            'id' => 'nama_survey_id',
-                                            'class' => 'select2',
-                                        ])
+                                    @component('components.formGroup.select', [
+                                        'label' => 'Pilih Nama Survey',
+                                        'name' => 'nama_survey_id',
+                                        'id' => 'nama_survey_id',
+                                        'class' => 'select2',
+                                    ])
                                         @slot('options')
                                             @foreach ($namaSurvey as $survey)
                                                 <option value="{{ $survey->id }}">{{ $survey->nama }} | {{ $survey->tipe }}
@@ -78,11 +76,11 @@
                             <div class="row justify-content-center">
                                 <div class="col-lg col-md float-right">
                                     <div class="form-group d-flex justify-content-end">
-                                        @component('components.buttons.next',
-                                            [
-                                                'label' => 'Selanjutnya',
-                                                'class' => '',
-                                            ])
+                                        @component('components.buttons.next', [
+                                            'id' => 'btn-selanjutnya',
+                                            'label' => 'Selanjutnya',
+                                            'class' => '',
+                                        ])
                                         @endcomponent
                                     </div>
                                 </div>
@@ -93,6 +91,7 @@
             </div>
         </div>
     </section>
+
 
     <section class="d-none" id="formResponden">
         <div class="row mt-4 justify-content-center">
@@ -170,6 +169,9 @@
         $(function() {
             $('#add-responden').on('click', function() {
                 $('#formResponden').removeClass('d-none');
+                $('html, body').animate({
+                    scrollTop: $("#btn-selanjutnya").offset().top
+                }, 500);
                 $("#form_add_responden").trigger("reset");
             })
         });
