@@ -267,7 +267,7 @@
             statistik()
             $('#tahun').change(function() {
                 statistik()
-                location.reload()
+                // location.reload()
             })
         })
 
