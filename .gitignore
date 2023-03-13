@@ -16,3 +16,6 @@ yarn-error.log
 .DS_Store
 .DS_Store
 /config/filesystem.php
+*.crt
+*.csr
+*.key
