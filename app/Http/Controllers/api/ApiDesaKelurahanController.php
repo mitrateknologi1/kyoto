@@ -19,7 +19,7 @@ class ApiDesaKelurahanController extends Controller
         if($id != null){
             $data = Desa_kelurahan::where('kecamatan_id', $id)->orderBy('id', 'asc')->get();
         } else {
-            $data = Desa_kelurahan::all();
+            $data = Desa_kelurahan::where('status', 1)->get();
         }
         if($data){
             return response([
