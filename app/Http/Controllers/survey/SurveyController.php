@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use PDO;
 use Yajra\DataTables\Facades\DataTables;
 
 class SurveyController extends Controller
@@ -24,6 +25,12 @@ class SurveyController extends Controller
         $namaSurveyId = $request->nama_survey_id;
         $institusiId = $request->institusi_id;
         $supervisorId = $request->supervisor_id;
+        $kabupatenKotaId = $request->kabupaten_kota_id;
+        $kecamatanId = $request->kecamatan_id;
+        $desaKelurahanId = $request->desa_kelurahan_id;
+        $lokasiSurveyId = $request->lokasi_survey_id;
+        $tanggalDari = $request->tanggal_dari;
+        $tanggalSampai = $request->tanggal_sampai;
         $status = $request->status;
         $search = $request->search;
 
@@ -84,7 +91,69 @@ class SurveyController extends Controller
                             $query->where('nama_lengkap', 'like', '%' . $search . '%');
                         });
                     }
-                })->orderBy('updated_at', 'DESC');
+                })->where(function ($query) use ($kabupatenKotaId, $kecamatanId, $desaKelurahanId, $lokasiSurveyId) {
+                    if ($kabupatenKotaId != 'semua' && $kabupatenKotaId != null) {
+                        $query->whereHas('supervisor', function ($query) use ($kabupatenKotaId) {
+                            $query->whereHas('lokasiSurveySupervisor', function ($query) use ($kabupatenKotaId) {
+                                $query->whereHas('lokasiSurvey', function ($query) use ($kabupatenKotaId) {
+                                    $query->whereHas('desa_kelurahan', function ($query) use ($kabupatenKotaId) {
+                                        $query->whereHas('kecamatan', function ($query) use ($kabupatenKotaId) {
+                                            $query->where('kabupaten_kota_id', $kabupatenKotaId);
+                                        });
+                                    });
+                                });
+                            });
+                        });
+                    }
+
+                    if ($kecamatanId != 'semua' && $kecamatanId != null) {
+                        $query->whereHas('supervisor', function ($query) use ($kecamatanId) {
+                            $query->whereHas('lokasiSurveySupervisor', function ($query) use ($kecamatanId) {
+                                $query->whereHas('lokasiSurvey', function ($query) use ($kecamatanId) {
+                                    $query->whereHas('desa_kelurahan', function ($query) use ($kecamatanId) {
+                                        $query->where('kecamatan_id', $kecamatanId);
+                                    });
+                                });
+                            });
+                        });
+                    }
+
+                    if ($desaKelurahanId != 'semua' && $desaKelurahanId != null) {
+                        $query->whereHas('supervisor', function ($query) use ($desaKelurahanId) {
+                            $query->whereHas('lokasiSurveySupervisor', function ($query) use ($desaKelurahanId) {
+                                $query->whereHas('lokasiSurvey', function ($query) use ($desaKelurahanId) {
+                                    $query->where('desa_kelurahan_id', $desaKelurahanId);
+                                });
+                            });
+                        });
+                    }
+
+                    if ($lokasiSurveyId != 'semua' && $lokasiSurveyId != null) {
+                        $query->whereHas('supervisor', function ($query) use ($lokasiSurveyId) {
+                            $query->whereHas('lokasiSurveySupervisor', function ($query) use ($lokasiSurveyId) {
+                                $query->where('lokasi_survey_id', $lokasiSurveyId);
+                            });
+                        });
+                    }
+                })
+                ->where(function ($query) use ($tanggalDari, $tanggalSampai) {
+                    if ($tanggalDari) {
+                        try {
+                            $tanggalDari = Carbon::parse($tanggalDari);
+                            $query->whereDate('created_at', '>=', $tanggalDari);
+                        } catch (\Exception $e) {
+                        }
+                    }
+
+                    if ($tanggalSampai) {
+                        try {
+                            $tanggalSampai = Carbon::parse($tanggalSampai);
+                            $query->whereDate('created_at', '<=', $tanggalSampai);
+                        } catch (\Exception $e) {
+                        }
+                    }
+                })
+                ->orderBy('updated_at', 'DESC');
             return DataTables::of($data)
                 ->addIndexColumn()
                 ->addColumn('nama', function ($row) {

@@ -36,14 +36,13 @@
     <form action="" method="GET">
         {{-- @csrf --}}
         <div class="row">
-            <div class="col-lg">
-                @component('components.formGroup.select',
-                    [
-                        'label' => 'Pilih Nama Survey',
-                        'name' => 'nama_survey_id',
-                        'id' => 'nama_survey_id',
-                        'class' => 'select2 filter',
-                    ])
+            <div class="col-lg-4">
+                @component('components.formGroup.select', [
+                    'label' => 'Pilih Nama Survey',
+                    'name' => 'nama_survey_id',
+                    'id' => 'nama_survey_id',
+                    'class' => 'select2 filter',
+                ])
                     @slot('options')
                         @if (count($namaSurvey) > 0)
                             @foreach ($namaSurvey as $row)
@@ -55,14 +54,13 @@
             </div>
             @if (in_array(Auth::user()->role, ['Admin', 'Institusi', 'Sub Admin']))
                 @if (in_array(Auth::user()->role, ['Admin', 'Sub Admin']))
-                    <div class="col-lg">
-                        @component('components.formGroup.select',
-                            [
-                                'label' => 'Pilih Institusi',
-                                'name' => 'institusi_id',
-                                'id' => 'institusi_id',
-                                'class' => 'filter select2',
-                            ])
+                    <div class="col-lg-4">
+                        @component('components.formGroup.select', [
+                            'label' => 'Pilih Institusi',
+                            'name' => 'institusi_id',
+                            'id' => 'institusi_id',
+                            'class' => 'filter select2',
+                        ])
                             @slot('options')
                                 <option value="semua">Semua</option>
                                 @if (count($institusi) > 0)
@@ -74,28 +72,26 @@
                         @endcomponent
                     </div>
                 @endif
-                <div class="col-lg">
-                    @component('components.formGroup.select',
-                        [
-                            'label' => 'Pilih Supervisor / DPL',
-                            'name' => 'supervisor_id',
-                            'id' => 'supervisor_id',
-                            'class' => 'filter select2',
-                        ])
+                <div class="col-lg-4">
+                    @component('components.formGroup.select', [
+                        'label' => 'Pilih Supervisor / DPL',
+                        'name' => 'supervisor_id',
+                        'id' => 'supervisor_id',
+                        'class' => 'filter select2',
+                    ])
                         @slot('options')
                         @endslot
                     @endcomponent
                 </div>
             @endif
             @if (in_array(Auth::user()->role, ['Supervisor', 'Institusi']))
-                <div class="col-lg">
-                    @component('components.formGroup.select',
-                        [
-                            'label' => 'Pilih Surveyor',
-                            'name' => 'surveyor_id',
-                            'id' => 'surveyor_id',
-                            'class' => 'filter select2',
-                        ])
+                <div class="col-lg-4">
+                    @component('components.formGroup.select', [
+                        'label' => 'Pilih Surveyor',
+                        'name' => 'surveyor_id',
+                        'id' => 'surveyor_id',
+                        'class' => 'filter select2',
+                    ])
                         @slot('options')
                             <option value="semua">Semua</option>
                             @if (count($surveyor) > 0)
@@ -107,6 +103,74 @@
                     @endcomponent
                 </div>
             @endif
+            <div class="col-lg-4 col-md-4">
+                {{-- Kabupaten / Kota --}}
+                @component('components.formGroup.select', [
+                    'label' => 'Kabupaten / Kota',
+                    'name' => 'kabupaten_kota_id',
+                    'id' => 'kabupaten-kota',
+                    'class' => 'select2 filter',
+                    'options' => '',
+                ])
+                @endcomponent
+            </div>
+            <div class="col-lg-4 col-md-4">
+                {{-- Kecamatan --}}
+                @component('components.formGroup.select', [
+                    'label' => 'Kecamatan',
+                    'name' => 'kecamatan_id',
+                    'id' => 'kecamatan',
+                    'class' => 'select2 filter',
+                    'options' => '',
+                ])
+                @endcomponent
+            </div>
+            <div class="col-lg-4 col-md-4">
+                {{-- Desa / Kelurahan --}}
+                @component('components.formGroup.select', [
+                    'label' => 'Desa / Kelurahan',
+                    'name' => 'desa_kelurahan_id',
+                    'id' => 'desa-kelurahan',
+                    'class' => 'select2 filter',
+                    'options' => '',
+                ])
+                @endcomponent
+            </div>
+            <div class="col-lg-12 col-md-12">
+                {{-- Desa / Kelurahan --}}
+                @component('components.formGroup.select', [
+                    'label' => 'Lokasi / Posko',
+                    'name' => 'lokasi_survey_id',
+                    'id' => 'lokasi-survey',
+                    'class' => 'select2 filter',
+                    'options' => '',
+                ])
+                @endcomponent
+            </div>
+            <div class="col-lg-6 col-md-6">
+                @component('components.formGroup.input', [
+                    'label' => 'Tanggal Dari (Tanggal-Bulan-Tahun)',
+                    'type' => 'text',
+                    'name' => 'tanggal_dari',
+                    'id' => 'tanggal_dari',
+                    'class' => 'filter tanggal',
+                    'placeholder' => '',
+                    'value' => '',
+                ])
+                @endcomponent
+            </div>
+            <div class="col-lg-6 col-md-6">
+                @component('components.formGroup.input', [
+                    'label' => 'Tanggal Sampai (Tanggal-Bulan-Tahun)',
+                    'type' => 'text',
+                    'name' => 'tanggal_sampai',
+                    'id' => 'tanggal_sampai',
+                    'class' => 'filter tanggal',
+                    'placeholder' => '',
+                    'value' => '',
+                ])
+                @endcomponent
+            </div>
             <div class="col-lg-12">
                 @if (count($errors) > 0)
                     @foreach ($errors->all() as $error)
@@ -139,8 +203,13 @@
         <input type="text" name="filter_institusi" value="{{ $_GET['institusi_id'] ?? '' }}">
         <input type="text" name="filter_supervisor" value="{{ $_GET['supervisor_id'] ?? '' }}">
         <input type="text" name="filter_surveyor" value="{{ $_GET['surveyor_id'] ?? '' }}">
+        <input type="text" name="filter_kabupaten_kota_id" value="{{ $_GET['kabupaten_kota_id'] ?? '' }}">
+        <input type="text" name="filter_kecamatan_id" value="{{ $_GET['kecamatan_id'] ?? '' }}">
+        <input type="text" name="filter_desa_kelurahan_id" value="{{ $_GET['desa_kelurahan_id'] ?? '' }}">
+        <input type="text" name="filter_lokasi_survey_id" value="{{ $_GET['lokasi_survey_id'] ?? '' }}">
+        <input type="text" name="filter_tanggal_dari" value="{{ $_GET['tanggal_dari'] ?? '' }}">
+        <input type="text" name="filter_tanggal_sampai" value="{{ $_GET['tanggal_sampai'] ?? '' }}">
         <input type="text" name="page" value="{{ $_GET['page'] ?? '' }}">
-
     </form>
 
     <div class="row">
@@ -151,6 +220,7 @@
                     <th scope="col">Nama</th>
                     <th scope="col">Institusi</th>
                     <th scope="col">Supervisor / DPL</th>
+                    <th scope="col">Lokasi Survey</th>
                     <th scope="col">Tipe</th>
                     <th scope="col">Tanggal</th>
                 </tr>
@@ -187,6 +257,23 @@
                         </td>
                         <td>
                             @php
+                                $lokasiSurvey = '';
+                                if ($row->profile->anggotaSupervisor) {
+                                    $lokasiSurvey .=
+                                        '<p class="mb-0 pb-0">' .
+                                        $row->profile->anggotaSupervisor->lokasiSurveySupervisor->lokasiSurvey->nama_lokasi_survey .
+                                        '</p>
+                                            <h6 class="fw-bold">' .
+                                        $row->profile->anggotaSupervisor->lokasiSurveySupervisor->lokasiSurvey->desa_kelurahan->nama .
+                                        '</h6>';
+                                } else {
+                                    $lokasiSurvey .= '-';
+                                }
+                                echo $lokasiSurvey;
+                            @endphp
+                        </td>
+                        <td>
+                            @php
                                 if ($row->namaSurvey->tipe == 'Pre') {
                                     echo '<span class="badge badge-primary">PRE</span>';
                                 } else {
@@ -216,11 +303,12 @@
 
 @push('script')
     <script>
+        getKabupaten();
         var idInstitusi = '';
 
         $('#nama_survey_id').val("{{ $_GET['nama_survey_id'] ?? '' }}").trigger('change');
-
-        $('#surveyor_id').val("{{ $_GET['surveyor_id'] ?? '' }}").trigger('change');
+        $('#tanggal_dari').val("{{ $_GET['tanggal_dari'] ?? '' }}").trigger('change');
+        $('#tanggal_sampai').val("{{ $_GET['tanggal_sampai'] ?? '' }}").trigger('change');
 
         if ("{{ Auth::user()->role }}" == "Admin" || "{{ Auth::user()->role }}" == "Sub Admin") {
             $('#institusi_id').val("{{ $_GET['institusi_id'] ?? '' }}").trigger('change');
@@ -280,6 +368,81 @@
 
         $('#btn-export').click(function() {
             $('#form-export').submit();
-        })
+        });
+
+
+        function getKabupaten() {
+            $("#kabupaten-kota").html('');
+            $("#kabupaten-kota").append('<option value="">- Pilih Salah Satu -</option>');
+            $('#kabupaten-kota').append("<option value='semua'>Semua</option>");
+            $.get("{{ route('listKabupatenKota') }}", {
+                idProvinsi: 72,
+                is_responden: '{{ $is_responden ?? 2 }}',
+            }, function(result) {
+                $.each(result, function(key, val) {
+                    $('#kabupaten-kota').append(
+                        `<option value="${val.id}">${val.nama}</option>`);
+                })
+                $('#kabupaten-kota').attr('disabled', false);
+                $('#kabupaten-kota').val("{{ $_GET['kabupaten_kota_id'] ?? '' }}").trigger('change');
+            });
+        }
+
+        $("#kabupaten-kota").change(function() {
+            if ($("#kabupaten-kota").val() != '') {
+                $("#kecamatan").html('');
+                $("#kecamatan").append('<option value="">- Pilih Salah Satu -</option>');
+                $('#kecamatan').append("<option value='semua'>Semua</option>");
+                $.get("{{ route('listKecamatan') }}", {
+                    idKabupatenKota: $("#kabupaten-kota").val(),
+                    is_responden: '{{ $is_responden ?? 2 }}',
+                }, function(result) {
+                    $.each(result, function(key, val) {
+                        $('#kecamatan').append(
+                            `<option value="${val.id}">${val.nama}</option>`);
+                    })
+                    $('#kecamatan').attr('disabled', false);
+                    $('#kecamatan').val("{{ $_GET['kecamatan_id'] ?? '' }}").trigger('change');
+                });
+            }
+        });
+
+        $("#kecamatan").change(function() {
+            if ($("#kecamatan").val() != '') {
+                $("#desa-kelurahan").html('');
+                $("#desa-kelurahan").append('<option value="">- Pilih Salah Satu -</option>');
+                $('#desa-kelurahan').append("<option value='semua'>Semua</option>");
+                $.get("{{ route('listDesaKelurahan') }}", {
+                    idKecamatan: $("#kecamatan").val(),
+                    is_responden: '{{ $is_responden ?? 2 }}',
+                }, function(result) {
+                    $.each(result, function(key, val) {
+                        $('#desa-kelurahan').append(
+                            `<option value="${val.id}">${val.nama}</option>`);
+                    })
+                    $('#desa-kelurahan').attr('disabled', false);
+                    $('#desa-kelurahan').val("{{ $_GET['desa_kelurahan_id'] ?? '' }}").trigger('change');
+                });
+            }
+        });
+
+        $("#desa-kelurahan").change(function() {
+            if ($("#desa-kelurahan").val() != '') {
+                $("#lokasi-survey").html('');
+                $("#lokasi-survey").append('<option value="">- Pilih Salah Satu -</option>');
+                $('#lokasi-survey').append("<option value='semua'>Semua</option>");
+                $.get("{{ url('list/lokasi-survey') }}", {
+                    idDesaKelurahan: $("#desa-kelurahan").val(),
+                    is_responden: '{{ $is_responden ?? 2 }}',
+                }, function(result) {
+                    $.each(result, function(key, val) {
+                        $('#lokasi-survey').append(
+                            `<option value="${val.id}">${val.nama_lokasi_survey}</option>`);
+                    })
+                    $('#lokasi-survey').attr('disabled', false);
+                    $('#lokasi-survey').val("{{ $_GET['lokasi_survey_id'] ?? '' }}").trigger('change');
+                });
+            }
+        });
     </script>
 @endpush
