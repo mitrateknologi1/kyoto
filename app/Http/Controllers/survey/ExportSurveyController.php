@@ -51,6 +51,12 @@ class ExportSurveyController extends Controller
         $nama_survey_id = $request->nama_survey_id;
         $institusi_id = $request->institusi_id;
         $supervisorId = $request->supervisor_id;
+        $kabupatenKotaId = $request->kabupaten_kota_id;
+        $kecamatanId = $request->kecamatan_id;
+        $desaKelurahanId = $request->desa_kelurahan_id;
+        $lokasiSurveyId = $request->lokasi_survey_id;
+        $tanggalDari = $request->tanggal_dari;
+        $tanggalSampai = $request->tanggal_sampai;
 
         $data = Survey::with(['responden', 'namaSurvey', 'profile'])->where('is_selesai', 1)
             ->where(function ($query) use ($surveyor_id) {
@@ -84,7 +90,70 @@ class ExportSurveyController extends Controller
                     });
                 }
             })
-            ->where('nama_survey_id', $nama_survey_id)->orderBy('updated_at', 'DESC')->paginate(50)->withQueryString();
+            ->where('nama_survey_id', $nama_survey_id)
+            ->where(function ($query) use ($kabupatenKotaId, $kecamatanId, $desaKelurahanId, $lokasiSurveyId) {
+                if ($kabupatenKotaId != 'semua' && $kabupatenKotaId != null) {
+                    $query->whereHas('supervisor', function ($query) use ($kabupatenKotaId) {
+                        $query->whereHas('lokasiSurveySupervisor', function ($query) use ($kabupatenKotaId) {
+                            $query->whereHas('lokasiSurvey', function ($query) use ($kabupatenKotaId) {
+                                $query->whereHas('desa_kelurahan', function ($query) use ($kabupatenKotaId) {
+                                    $query->whereHas('kecamatan', function ($query) use ($kabupatenKotaId) {
+                                        $query->where('kabupaten_kota_id', $kabupatenKotaId);
+                                    });
+                                });
+                            });
+                        });
+                    });
+                }
+
+                if ($kecamatanId != 'semua' && $kecamatanId != null) {
+                    $query->whereHas('supervisor', function ($query) use ($kecamatanId) {
+                        $query->whereHas('lokasiSurveySupervisor', function ($query) use ($kecamatanId) {
+                            $query->whereHas('lokasiSurvey', function ($query) use ($kecamatanId) {
+                                $query->whereHas('desa_kelurahan', function ($query) use ($kecamatanId) {
+                                    $query->where('kecamatan_id', $kecamatanId);
+                                });
+                            });
+                        });
+                    });
+                }
+
+                if ($desaKelurahanId != 'semua' && $desaKelurahanId != null) {
+                    $query->whereHas('supervisor', function ($query) use ($desaKelurahanId) {
+                        $query->whereHas('lokasiSurveySupervisor', function ($query) use ($desaKelurahanId) {
+                            $query->whereHas('lokasiSurvey', function ($query) use ($desaKelurahanId) {
+                                $query->where('desa_kelurahan_id', $desaKelurahanId);
+                            });
+                        });
+                    });
+                }
+
+                if ($lokasiSurveyId != 'semua' && $lokasiSurveyId != null) {
+                    $query->whereHas('supervisor', function ($query) use ($lokasiSurveyId) {
+                        $query->whereHas('lokasiSurveySupervisor', function ($query) use ($lokasiSurveyId) {
+                            $query->where('lokasi_survey_id', $lokasiSurveyId);
+                        });
+                    });
+                }
+            })
+            ->where(function ($query) use ($tanggalDari, $tanggalSampai) {
+                if ($tanggalDari) {
+                    try {
+                        $tanggalDari = Carbon::parse($tanggalDari);
+                        $query->whereDate('created_at', '>=', $tanggalDari);
+                    } catch (\Exception $e) {
+                    }
+                }
+
+                if ($tanggalSampai) {
+                    try {
+                        $tanggalSampai = Carbon::parse($tanggalSampai);
+                        $query->whereDate('created_at', '<=', $tanggalSampai);
+                    } catch (\Exception $e) {
+                    }
+                }
+            })
+            ->orderBy('updated_at', 'DESC')->paginate(50)->withQueryString();
 
         return view('pages.survey.exportSurvey.index', compact('namaSurvey', 'surveyor', 'institusi', 'data', 'halaman'));
     }
@@ -94,6 +163,12 @@ class ExportSurveyController extends Controller
         // dd($request->page);
         $surveyor_id = $request->filter_surveyor;
         $institusi_id = $request->filter_institusi;
+        $kabupatenKotaId = $request->filter_kabupaten_kota_id;
+        $kecamatanId = $request->filter_kecamatan_id;
+        $desaKelurahanId = $request->filter_desa_kelurahan_id;
+        $lokasiSurveyId = $request->filter_lokasi_survey_id;
+        $tanggalDari = $request->filter_tanggal_dari;
+        $tanggalSampai = $request->filter_tanggal_sampai;
         $supervisorId = Auth::user()->role == "Supervisor" ? Auth::user()->profile->id : $request->filter_supervisor;
         $this->validate(
             $request,
@@ -138,7 +213,70 @@ class ExportSurveyController extends Controller
                     });
                 }
             })
-            ->where('nama_survey_id', $request->filter_nama_survey)->orderBy('updated_at', 'DESC')->paginate(50)->withQueryString();
+            ->where('nama_survey_id', $request->filter_nama_survey)
+            ->where(function ($query) use ($kabupatenKotaId, $kecamatanId, $desaKelurahanId, $lokasiSurveyId) {
+                if ($kabupatenKotaId != 'semua' && $kabupatenKotaId != null) {
+                    $query->whereHas('supervisor', function ($query) use ($kabupatenKotaId) {
+                        $query->whereHas('lokasiSurveySupervisor', function ($query) use ($kabupatenKotaId) {
+                            $query->whereHas('lokasiSurvey', function ($query) use ($kabupatenKotaId) {
+                                $query->whereHas('desa_kelurahan', function ($query) use ($kabupatenKotaId) {
+                                    $query->whereHas('kecamatan', function ($query) use ($kabupatenKotaId) {
+                                        $query->where('kabupaten_kota_id', $kabupatenKotaId);
+                                    });
+                                });
+                            });
+                        });
+                    });
+                }
+
+                if ($kecamatanId != 'semua' && $kecamatanId != null) {
+                    $query->whereHas('supervisor', function ($query) use ($kecamatanId) {
+                        $query->whereHas('lokasiSurveySupervisor', function ($query) use ($kecamatanId) {
+                            $query->whereHas('lokasiSurvey', function ($query) use ($kecamatanId) {
+                                $query->whereHas('desa_kelurahan', function ($query) use ($kecamatanId) {
+                                    $query->where('kecamatan_id', $kecamatanId);
+                                });
+                            });
+                        });
+                    });
+                }
+
+                if ($desaKelurahanId != 'semua' && $desaKelurahanId != null) {
+                    $query->whereHas('supervisor', function ($query) use ($desaKelurahanId) {
+                        $query->whereHas('lokasiSurveySupervisor', function ($query) use ($desaKelurahanId) {
+                            $query->whereHas('lokasiSurvey', function ($query) use ($desaKelurahanId) {
+                                $query->where('desa_kelurahan_id', $desaKelurahanId);
+                            });
+                        });
+                    });
+                }
+
+                if ($lokasiSurveyId != 'semua' && $lokasiSurveyId != null) {
+                    $query->whereHas('supervisor', function ($query) use ($lokasiSurveyId) {
+                        $query->whereHas('lokasiSurveySupervisor', function ($query) use ($lokasiSurveyId) {
+                            $query->where('lokasi_survey_id', $lokasiSurveyId);
+                        });
+                    });
+                }
+            })
+            ->where(function ($query) use ($tanggalDari, $tanggalSampai) {
+                if ($tanggalDari) {
+                    try {
+                        $tanggalDari = Carbon::parse($tanggalDari);
+                        $query->whereDate('created_at', '>=', $tanggalDari);
+                    } catch (\Exception $e) {
+                    }
+                }
+
+                if ($tanggalSampai) {
+                    try {
+                        $tanggalSampai = Carbon::parse($tanggalSampai);
+                        $query->whereDate('created_at', '<=', $tanggalSampai);
+                    } catch (\Exception $e) {
+                    }
+                }
+            })
+            ->orderBy('updated_at', 'DESC')->paginate(50)->withQueryString();
 
         // dd($survey);
 

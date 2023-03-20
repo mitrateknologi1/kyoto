@@ -26,7 +26,7 @@ class AnggotaSupervisorController extends Controller
         }
 
         if ($request->ajax()) {
-            $data = AnggotaSupervisor::where('profile_dpl', $lokasiSurveySupervisor->profile_id)->where('lokasi_survey_supervisor_id', $lokasiSurveySupervisor->id)->get();
+            $data = AnggotaSupervisor::where('profile_dpl', $lokasiSurveySupervisor->profile_id)->where('lokasi_survey_supervisor_id', $lokasiSurveySupervisor->id)->orderBy('created_at', 'desc')->get();
             return DataTables::of($data)
                 ->addIndexColumn()
                 ->addColumn('nama', function ($row) {

@@ -29,7 +29,7 @@ class UserController extends Controller
         ];
 
         if ($request->ajax()) {
-            $data = User::with('profile')->orderBy('role', 'ASC')->orderBy('created_at', 'DESC');
+            $data = User::with('profile')->orderBy('created_at', 'DESC');
             return DataTables::of($data)
                 ->addIndexColumn()
                 ->addColumn('nama_profil', function ($row) {

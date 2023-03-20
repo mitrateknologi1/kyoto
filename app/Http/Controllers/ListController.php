@@ -62,7 +62,12 @@ class ListController extends Controller
     public function listLokasiSurvey(Request $request)
     {
         $idLokasiSurvey = $request->idLokasiSurvey;
-        $lokasiSurvey = LokasiSurvey::with(['desa_kelurahan', 'desa_kelurahan.kecamatan', 'desa_kelurahan.kecamatan.kabupatenKota', 'desa_kelurahan.kecamatan.kabupatenKota.provinsi'])->orderBy('nama_lokasi_survey', 'asc')->get();
+        $idDesaKelurahan = $request->idDesaKelurahan;
+        $lokasiSurvey = LokasiSurvey::with(['desa_kelurahan', 'desa_kelurahan.kecamatan', 'desa_kelurahan.kecamatan.kabupatenKota', 'desa_kelurahan.kecamatan.kabupatenKota.provinsi'])->where(function ($query) use ($idDesaKelurahan) {
+            if ($idDesaKelurahan) {
+                $query->where('desa_kelurahan_id', $idDesaKelurahan);
+            }
+        })->orderBy('nama_lokasi_survey', 'asc')->get();
 
         if ($idLokasiSurvey) {
             $lokasiSurveyHapus = LokasiSurvey::with(['desa_kelurahan', 'desa_kelurahan.kecamatan', 'desa_kelurahan.kecamatan.kabupatenKota', 'desa_kelurahan.kecamatan.kabupatenKota.provinsi'])->where('id', $idLokasiSurvey)->withTrashed()->first();
