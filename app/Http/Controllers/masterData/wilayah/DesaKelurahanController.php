@@ -69,7 +69,7 @@ class DesaKelurahanController extends Controller
         $validator = Validator::make(
             $request->all(),
             [
-                'nama' => 'required|unique:desa_kelurahan,nama,NULL,id,deleted_at,NULL',
+                'nama' => 'required',
             ],
             [
                 'nama.required' => 'Nama Desa/Kelurahan tidak boleh kosong',
@@ -125,7 +125,7 @@ class DesaKelurahanController extends Controller
         $validator = Validator::make(
             $request->all(),
             [
-                'nama' => 'required|unique:desa_kelurahan,nama,' . $desaKelurahan->nama . ',nama,deleted_at,NULL',
+                'nama' => 'required',
             ],
             [
                 'nama.required' => 'Nama Desa/Kelurahan tidak boleh kosong',

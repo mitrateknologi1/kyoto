@@ -73,7 +73,7 @@ class KecamatanController extends Controller
         $validator = Validator::make(
             $request->all(),
             [
-                'nama' => 'required|unique:kecamatan,nama,NULL,id,deleted_at,NULL',
+                'nama' => 'required',
             ],
             [
                 'nama.required' => 'Nama Kecamatan tidak boleh kosong',
@@ -129,7 +129,7 @@ class KecamatanController extends Controller
         $validator = Validator::make(
             $request->all(),
             [
-                'nama' => 'required|unique:kecamatan,nama,' . $kecamatan->nama . ',nama,deleted_at,NULL',
+                'nama' => 'required',
             ],
             [
                 'nama.required' => 'Nama Kecamatan tidak boleh kosong',

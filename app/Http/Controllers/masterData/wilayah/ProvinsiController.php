@@ -78,7 +78,7 @@ class ProvinsiController extends Controller
         $validator = Validator::make(
             $request->all(),
             [
-                'nama' => 'required|unique:provinsi,nama,NULL,id,deleted_at,NULL',
+                'nama' => 'required',
             ],
             [
                 'nama.required' => 'Nama Provinsi tidak boleh kosong',
@@ -131,7 +131,7 @@ class ProvinsiController extends Controller
         $validator = Validator::make(
             $request->all(),
             [
-                'nama' => 'required|unique:provinsi,nama,' . $wilayah_provinsi->nama . ',nama,deleted_at,NULL',
+                'nama' => 'required',
             ],
             [
                 'nama.required' => 'Nama Provinsi tidak boleh kosong',
